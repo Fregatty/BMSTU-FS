@@ -1,0 +1,71 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    <link href="{% static "bootstrap/css/bootstrap.css" %}" rel="stylesheet">
+    <link href="{% static "bootstrap/css/bootstrap-grid.css" %}" rel="stylesheet">
+    <link href="{% static "bootstrap/css/bootstrap-reboot.css" %}" rel="stylesheet">
+    <link href="{% static "bootstrap/css/navbar.css" %}" rel="stylesheet">
+    <link href="{% static "bootstrap/css/index.css" %}" rel="stylesheet">
+    <link href="{% static "bootstrap/css/sidebar.css" %}" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar sticky-top navbar-expand-md navbar-dark bg-dark">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item active">
+                <a class="nav-link" href="{% url 'storage' %}">Storage</a>
+              </li>
+              {% if request.user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'history' %}">Actions History</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'email' %}">Send email</a>
+              </li>
+              {% endif %}
+              {% if request.user.is_superuser %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'upload_materials' %}">Upload materials</a>
+              </li>
+              {% endif %}
+            </ul>
+        </div>
+        <div class="navbar-text">
+            <span class="user">
+                {% if request.user.is_authenticated %}
+                    Hello, {{ request.user.username }}! You also can
+                    <a href="{% url "logout" %}">Logout</a>
+                    <a>|</a>
+                    <a href="{% url "password_change" %}">Change password</a>
+                    <a>|</a>
+                    <a href="{% url "edit" %}">Edit account</a>
+                {% else %}
+                    <a href="{% url "login" %}">Login</a>
+                    <a>|</a>
+                    <a href="{% url "register" %}">Register</a>
+                {% endif %}
+            </span>
+        </div>
+</nav>
+{% if messages %}
+    <ul id="messages">
+        <a href="#" class="close" onclick="document.getElementById('messages').setAttribute('style','display: none;');">✖</a>
+        {% for message in messages %}
+            <li class="{{ message.tags }}">
+                {{ message|safe }}
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+<div id="content">
+    {% block content %}
+    {% endblock %}
+</div>
+</body>
+</html>

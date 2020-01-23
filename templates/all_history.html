@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}Action History{% endblock %}
+{% block content %}
+    {% if actions %}
+    <h2>History of Your Actions</h2>
+    <table class="modified">
+    <tr class="bordered">
+        <th>User</th>
+        <th class="bordered">Action</th>
+        <th>Date</th>
+    </tr>
+    {% for action in actions %}
+    <tr class="bordered">
+        <td class="bordered">{{ action.user }}</td>
+        <td class="bordered">{{ action.action }}</td>
+        <td class="bordered">{{ action.date }}</td>
+    </tr>
+    {% endfor %}
+    </table>
+    {% else %}
+    <h1>No history recorded</h1>
+    {% endif %}
+    <div class="pagination">
+
+    <span class="step-links">
+        {% if actions.has_previous %}
+            <a href="?page={{ actions.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ actions.number }} of {{ actions.paginator.num_pages }}.
+        </span>
+
+        {% if actions.has_next %}
+            <a href="?page={{ actions.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+
+</div>
+{% endblock %}

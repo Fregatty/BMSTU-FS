@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}Storage{% endblock %}
+{% block content %}
+<div class="sidenav">
+  <form action="{% url "storage" %}" method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <p>{{ form.file }}</p>
+  <p><input type="submit" value="Upload" name="Upload" class="btn btn-secondary upload-button"/></p>
+  </form>
+  <p><button type="button" class="btn btn-secondary upload-button" onclick="show_element('folder_block')">Create Folder</button></p>
+  <div id="folder_block" style="display: none;">
+    <form action="{% url "storage" %}" method="post">
+    {% csrf_token %}
+    {{ folder_form.as_p }}
+    {{ folder_form.errors }}
+    <p><input type="submit" value="Create" name="Create Folder" class="btn btn-secondary"/></p>
+    </form>
+  </div>
+   <form action="{% url "storage" %}" method="post">
+   {% csrf_token %}
+        {% for doc in documents %}
+            <input type="checkbox" name="selections" class="hidden-checkbox" id="chck{{ doc.id }}" value="{{ doc.id }}"/>
+        {% endfor %}
+        {% for doc in shared_files %}
+            <input type="checkbox" name="selections" class="hidden-checkbox" id="chck{{ doc.id }}" value="{{ doc.id }}"/>
+        {% endfor %}
+        {% for folder in folders %}
+            <input type="checkbox" name="folder_selections" class="hidden-checkbox" id="check{{ folder.id }}" value="{{ folder.id }}"/>
+        {% endfor %}
+        {% for doc in department_files %}
+            <input type="checkbox" name="selections" class="hidden-checkbox" id="checkbox{{ doc.id }}" value="{{ doc.id }}"/>
+        {% endfor %}
+   <p><input type="submit" value="Create Archive with selected files" name="Create Archive" class="btn btn-secondary upload-button"/></p>
+   <p><input type="submit" value="Delete selected files" name="Delete" class="btn btn-secondary upload-button"/></p>
+   <p><input type="submit" value="Delete selected folders" name="DeleteFolders" class="btn btn-secondary upload-button"/></p>
+   <p><button type="button" class="btn btn-secondary upload-button" onclick="show_element('username_block')">Share files</button></p>
+   <div id="username_block" style="display: none;">
+        <p><input name="shared_to_user" type="text" placeholder="Enter username"/></p>
+        <p><input type="submit" name="Share" value="Share" class="btn btn-secondary"/></p>
+   </div>
+   </form>
+</div>
+
+<div class="main">
+    {% if form.non_field_errors %}
+        <div class="non-field-errors">
+        {% for err in form.non_field_errors %}
+            <p class="form-error">{{ err }}</p>
+        {% endfor %}
+        </div>
+    {% endif %}
+    {% if form.file.errors %}
+        <div class="non-field-errors">
+        {% for err in form.file.errors %}
+            <p class="form-error">{{ err }}</p>
+        {% endfor %}
+        </div>
+    {% endif %}
+    <h2>User Files</h2>
+    <table class="my-table">
+    <tr>
+        <th class="icon"></th>
+        <th class="filename">Filename</th>
+        <th>Created</th>
+        <th>Size</th>
+        <th>Downloaded</th>
+    </tr>
+    {% for doc in documents %}
+    <tr id="{{ doc.id }}" onclick="selectElement({{ doc.id }})">
+        <td class="icon"><img src="{% static "doc_icon.png" %} " alt="icon"></td>
+        <td class="filename"><a href="/download/{{ doc.id }}">{{ doc.filename }}</a></td>
+        <td>{{ doc.created_at | date }}</td>
+        <td>{{ doc.file.size | filesizeformat }}</td>
+        <td>{{ doc.downloaded }}</td>
+    </tr>
+    {% endfor %}
+    </table>
+    <h2>User Folders</h2>
+    <table class="my-table">
+        <tr>
+            <th></th>
+            <th class="filename">Folder name</th>
+        </tr>
+        {% for folder in folders %}
+        <tr id="folder{{ folder.id }}" onclick="selectFolder({{ folder.id }})">
+        {% if folder.files %}
+            <td class="icon-wide"><img src="{% static "full_folder.png" %} " alt="full_icon"></td>
+        {% else %}
+            <td class="icon-wide"><img src="{% static "empty_folder.png" %} " alt="empty_icon"></td>
+        {% endif %}
+            <td class="filename"><a href="/storage/{{ folder.id }}">{{ folder.name }}</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    <h2>Shared Files</h2>
+    <table class="my-table">
+    <tr>
+        <th class="icon"></th>
+        <th class="filename">Filename</th>
+        <th>Owner</th>
+        <th>Size</th>
+        <th>Downloaded</th>
+    </tr>
+    {% for doc in shared_files %}
+    <tr id="{{ doc.id }}" onclick="selectElement({{ doc.id }})">
+        <td class="icon"><img src="{% static "doc_icon.png" %} " alt="icon"></td>
+        <td class="filename"><a href="/download/{{ doc.id }}">{{ doc.filename }}</a></td>
+        <td>{{ doc.owner }}</td>
+        <td>{{ doc.file.size | filesizeformat }}</td>
+        <td>{{ doc.downloaded }}</td>
+        <td></td>
+    </tr>
+    {% endfor %}
+    </table>
+    <h2>Files of department {{ department.name }} </h2>
+    <table class="my-table">
+    <tr>
+        <th class="icon"></th>
+        <th class="filename">Filename</th>
+        <th>Size</th>
+        <th>Downloaded</th>
+    </tr>
+    {% for doc in department_files %}
+    <tr id="ch{{ doc.id }}" onclick="selectMaterial({{ doc.id }})">
+        <td class="icon"><img src="{% static "doc_icon.png" %} " alt="icon"></td>
+        <td class="filename"><a href="/download/{{ doc.id }}">{{ doc.filename }}</a></td>
+        <td>{{ doc.file.size | filesizeformat }}</td>
+        <td>{{ doc.downloaded }}</td>
+    </tr>
+    {% endfor %}
+    </table>
+</div>
+    <script type="text/javascript">
+    function selectElement(id) {
+        let filerow = document.getElementById(id);
+        let checkbox = document.getElementById('chck'+id);
+        if (checkbox.checked===true) {
+            filerow.style.backgroundColor = "#ffffff";
+            checkbox.checked = false;
+        }
+        else {
+            filerow.style.backgroundColor = "#b0daff";
+            checkbox.checked = true;
+        }
+    }
+    function selectMaterial(id) {
+        let filerow = document.getElementById('ch'+id);
+        let checkbox = document.getElementById('checkbox'+id);
+        if (checkbox.checked===true) {
+            filerow.style.backgroundColor = "#ffffff";
+            checkbox.checked = false;
+        }
+        else {
+            filerow.style.backgroundColor = "#b0daff";
+            checkbox.checked = true;
+        }
+    }
+    function selectFolder(id) {
+        let folder = document.getElementById('folder'+id);
+        let checkbox = document.getElementById('check'+id);
+        if (checkbox.checked===true) {
+            folder.style.backgroundColor = "#ffffff";
+            checkbox.checked = false;
+        }
+        else {
+            folder.style.backgroundColor = "#b0daff";
+            checkbox.checked = true;
+        }
+    }
+    </script>
+    <script type="text/javascript">
+        function show_element(id)
+        {
+            let obj = document.getElementById(id);
+            if (obj.style.display !== "block")
+            {
+                obj.style.display = "block";
+            }
+            else obj.style.display = "none";
+        }
+    </script>
+{% endblock %}

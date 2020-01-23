@@ -1,0 +1,16 @@
+.navbar {padding:0; margin-bottom:0}
+.navbar-dark .navbar-nav .nav-link{color:#fff;font-weight:600}
+.user {margin-right: 10px}
+.navbar-text {color:#fff;font-weight:600}
+#banner {margin-top:0 !important; position: absolute !important;}
+.img-banner{ width:1920px;height:400px; margin-top: 0 }
+.about {position:absolute;  top: 450px;}
+
+.error {
+    text-align:center;
+    background-color: #ff6082;
+}
+.success {
+    text-align:center;
+    background-color: #5cff6c;
+}

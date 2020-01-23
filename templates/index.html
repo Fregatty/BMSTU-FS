@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}Welcome page{% endblock %}
+{% block content %}
+    <div class="container-fluid" role="banner" id="banner">
+        <div class="row">
+                <img class="img-banner" src="{% static "1_fixed.png" %} " alt="Storage header">
+        </div>
+    </div>
+    <div class="container-fluid about">
+        <div class="row" style="margin:0">
+            <div class="col text-center">
+                <img src="{% static "sharing.png" %} " alt="Storage header">
+                <p class="h2">Online File Sharing, Access to Learning Materials and Much More!</p>
+                <p class="information-text">Our app lets you store your content online, access, manage and share it. Also it keeps all of your files safe.<br>
+                Keep your documents, files, student's works together and share them with your friends.</p>
+                <a href="{% url 'login' %}" class="glo">Sign in</a>
+                <a href="{% url 'register' %}" class="glo">Register</a>
+            </div>
+            <div class="col text-center">
+                <img src="{% static "file_storage.png" %} " alt="Storage header">
+                <p class="h2 heading"> What You Can Find On Our Site For Today:</p>
+                <ol class="list-counter-circle">
+                    <li>
+                        {{ user_count }} Registered users, uploading and sharing their content
+                    </li>
+                    <li>
+                        {{ file_count }} Uploaded files
+                    </li>
+                    <li>
+                        {{ material_count }} Methodical instructions and other learning materials
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+{% endblock %}

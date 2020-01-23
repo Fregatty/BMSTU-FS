@@ -1,0 +1,79 @@
+
+.sidenav {
+  height: 100%;
+  width: 265px;
+  position: fixed;
+  z-index: 1;
+  top: 40px;
+  left: 0;
+  background-color: #343a40;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+
+.sidenav p {
+  padding: 1px 6px 6px 4px;
+  font-size: 15px;
+  color: #f8ffff;
+  display: block;
+}
+
+.sidenav a {
+  padding: 6px 8px 6px 30px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+}
+
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+.main {
+  margin-left: 265px;
+  font-size: 20px;
+  padding: 0px 10px;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+
+.upload-button {
+  width:255px;
+}
+
+.my-table {
+    width:100%;
+    text-align: center;
+    border: 0px;
+}
+
+.filename {
+    text-align: left;
+}
+
+.icon {
+    width:40px;
+}
+
+.icon-wide {
+  width: 100px;
+}
+
+.hidden-checkbox {
+  display:none;
+}
+
+.modified {
+   width:100%;
+   font-size: 20px;
+   border: 3px solid grey;
+   text-align: center;
+}
+
+.bordered {
+  border: 1px solid grey;
+}

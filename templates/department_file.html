@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}Upload materials{% endblock %}
+{% block content %}
+    <form action="{% url 'upload_materials' %}" method="post" enctype="multipart/form-data">
+        {{ form.as_p }}
+        <p>
+        <label for="department">Department:</label>
+        <select name="department">
+        {% for choice in choices %}
+            <option value="{{ choice.id }}">{{ choice.name }}</option>
+        {% endfor %}
+        </select>
+        </p>
+        {% csrf_token %}
+        <p><input type="submit" value="Upload"></p>
+    </form>
+{% endblock %}

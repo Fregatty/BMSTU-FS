@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Minimal Django File Upload Example</title>
+    </head>
+    <body>
+    <form action="{% url "storage" %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <p>{{ form.non_field_errors }}</p>
+
+        <p>{{ form.file.label_tag }} {{ form.file.help_text }}</p>
+
+        <p>
+                {{ form.file.errors }}
+                {{ form.file }}
+        </p>
+        <p><input type="submit" value="Upload"/></p>
+    </form>
+    <form action="{% url "storage" %}" method="post">
+     {% csrf_token %}
+        <!-- List of uploaded by current user documents -->
+        {% if folders %}
+            <ul>
+                {% for folder in folders %}
+                    <li><a href="storage/{{ folder.id }}">{{ folder.name }}</a></li>
+                    <input type="checkbox" name="folder_selections" id="{{ folder.id }}" value="{{ folder.id }}"/>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No folders</p>
+        {% endif %}
+        {% if docs %}
+            <ul>
+                {% for document in docs %}
+                    <li><a href="download/{{ document.id }}">{{ document.file.name }}</a></li>
+                    <input type="checkbox" name="selections" id="{{ document.id }}" value="{{ document.id }}"/>
+                    <label for="{{ document.id }}"><b>{{document.file.name}}</b></label><br />
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No documents.</p>
+        {% endif %}
+            <p><input type="submit" name="delete" value="Delete"/></p>
+            <button type="button" onclick="show_sharing('username_block')">Share files</button>
+            <div id="username_block" style="display: none;">
+                <input name="shared_to_user" type="text" placeholder="Enter username"/>
+                <input type="submit" name="share" value="Share"/>
+            </div>
+            <p><input name="folder_name" type="text" placeholder="Enter folder name"/>
+            <p><input type="submit" name="Folder" value="Folder"/></p>
+            <p><input type="submit" name="Archive" value="Archive"/></p>
+    </form>
+    <script type="text/javascript">
+        function show_sharing(element_id)
+        {
+            let obj = document.getElementById(element_id);
+            if (obj.style.display !== "block")
+            {
+                obj.style.display = "block";
+            }
+            else obj.style.display = "none";
+        }
+    </script>
+    </body>
+</html>

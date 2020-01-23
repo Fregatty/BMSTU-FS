@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}Storage{% endblock %}
+{% block content %}
+<div class="main">
+    {% if form.non_field_errors %}
+        <div class="non-field-errors">
+        {% for err in form.non_field_errors %}
+            <p class="form-error">{{ err }}</p>
+        {% endfor %}
+        </div>
+    {% endif %}
+    {% if form.file.errors %}
+        <div class="non-field-errors">
+        {% for err in form.file.errors %}
+            <p class="form-error">{{ err }}</p>
+        {% endfor %}
+        </div>
+    {% endif %}
+<h2>Select files for sending</h2>
+<table class="my-table">
+   <tr>
+        <th class="icon"></th>
+        <th class="filename">Filename</th>
+        <th>Size</th>
+        <th>Downloaded</th>
+    </tr>
+    {% for doc in documents %}
+    <tr id="{{ doc.id }}" onclick="selectElement({{ doc.id }})">
+        <td class="icon"><img src="{% static "doc_icon.png" %} " alt="icon"></td>
+        <td class="filename">{{ doc.filename }}</td>
+        <td>{{ doc.file.size | filesizeformat }}</td>
+        <td>{{ doc.downloaded }}</td>
+    </tr>
+    {% endfor %}
+</table>
+<form action="{% url 'email' %}" method="post">
+{% csrf_token %}
+    {% for doc in documents %}
+        <input type="checkbox" name="selections" class="hidden-checkbox" id="chck{{ doc.id }}" value="{{ doc.id }}"/>
+    {% endfor %}
+    {{ form.as_p }}
+    <input type="submit" value="Send email" name="Send">
+</form>
+</div>
+<script type="text/javascript">
+    function selectElement(id) {
+        let filerow = document.getElementById(id);
+        let checkbox = document.getElementById('chck'+id);
+        if (checkbox.checked===true) {
+            filerow.style.backgroundColor = "#ffffff";
+            checkbox.checked = false;
+        }
+        else {
+            filerow.style.backgroundColor = "#b0daff";
+            checkbox.checked = true;
+        }
+    }
+</script>
+{% endblock %}

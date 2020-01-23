@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}Action History{% endblock %}
+{% block content %}
+    {% if actions %}
+    <h2>History of Your Actions</h2>
+    <table class="modified">
+    <tr class="bordered">
+        <th class="bordered">Action</th>
+        <th>Date</th>
+    </tr>
+    {% for action in actions %}
+    <tr class="bordered">
+        <td class="bordered">{{ action.action }}</td>
+        <td class="bordered">{{ action.date }}</td>
+    </tr>
+    {% endfor %}
+    </table>
+    {% else %}
+    <h1>No history recorded</h1>
+    {% endif %}
+{% endblock %}
